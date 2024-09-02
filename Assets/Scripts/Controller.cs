@@ -16,7 +16,9 @@ namespace Breakout
         [SerializeField] private TextMeshProUGUI ScoreText;
         [SerializeField] private GameObject Win;
         [SerializeField] private TextMeshProUGUI WinScoreText;
-      
+        [SerializeField] private GameObject StartGameText;
+
+        [SerializeField] private Timer gameTimer;  // Assign the Timer script in the Inspector
 
         private int score = 0;
         private Brick[] bricks;
@@ -27,6 +29,8 @@ namespace Breakout
         void Start() {
             Brick.OnBrickDestroyed += HandleBrickDestroyed;
             Ball.OnBallLost += HandleGameOver;
+            // Start the game timer when the game starts
+            gameTimer.OnTimerEnd += HandleGameOver;  // Subscribe to the timer end event
             InitBricks();
         }
 
@@ -36,15 +40,21 @@ namespace Breakout
             if (!isGameStart) {
                 if (Input.anyKeyDown){
                     isGameStart = true;
-                    OnResetLevel();
                     Ball.ShootBall();
+                    RestController();
+                    StartGameText.SetActive(false); 
+                    gameTimer.StartTimer();
+
                 }
             }    
         }
         void OnDestroy()
         {
-            // Unsubscribe from the OnBrickDestroyed event to avoid memory leaks
-            Brick.OnBrickDestroyed -= HandleBrickDestroyed;
+            // Unsubscribe from the event to avoid memory leaks           
+             Brick.OnBrickDestroyed -= HandleBrickDestroyed;      
+             gameTimer.OnTimerEnd -= HandleGameOver;            
+             Ball.OnBallLost -= HandleGameOver;
+
         }
 
         private void InitBricks()
@@ -65,25 +75,38 @@ namespace Breakout
 
             if (destructibleBricksCount <= 0){
                 Win.SetActive(true);
-                isGameStart = false;        
+                OnResetLevel();
+      
             }
         }
 
         private void HandleGameOver()
         {
             GameOver.SetActive(true);
-            isGameStart = false;
+            OnResetLevel();
         }
+
+        private void RestController()
+        {
+              Win.SetActive(false);
+            GameOver.SetActive(false);
+        }
+
         private void OnResetLevel()
         {
+            StartGameText.SetActive(true);
+            isGameStart = false;
+            gameTimer.StopTimer();
+             Paddle.ResetPaddle(); 
+            Ball.ResetBall();
+           
             score = 0;
-            Win.SetActive(false);
-            GameOver.SetActive(false);
+         
             foreach (Brick brick in bricks) {
                 brick.ResetBrick();    
             }    
-            Ball.RestBall();
-            Paddle.RestPaddle(); 
+           
+           
         }
     }
 }

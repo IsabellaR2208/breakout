@@ -52,7 +52,7 @@ namespace Breakout
             }
         }
 
-        public void RestPaddle()
+        public void ResetPaddle()
         {
             transform.position = initialPos;
         }

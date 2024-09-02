@@ -21,6 +21,7 @@ namespace Breakout
         }
         
          public void  ShootBall(){
+            rigidbody2D.isKinematic = false;
             // Stick the ball to the paddle.
             transform.position = paddle.transform.position + BallOffestFromPaddle;
             rigidbody2D.AddForce(initialImpulse, ForceMode2D.Impulse);
@@ -42,7 +43,7 @@ namespace Breakout
         private void OnHittingBottomBoundary()
         {
             OnBallLost?.Invoke();
-            gameObject.SetActive(false);
+
         }
         private void OnHittingPaddle(Collision2D collision)
         {
@@ -63,10 +64,14 @@ namespace Breakout
         }
 
 
-         public void RestBall()
+         public void ResetBall()
         {
-             transform.position = initialPos;
-             gameObject.SetActive(true);
+       
+            rigidbody2D.velocity = Vector2.zero;
+            rigidbody2D.angularVelocity = 0f;
+            rigidbody2D.Sleep();
+            rigidbody2D.isKinematic = true;
+            transform.position = paddle.transform.position + BallOffestFromPaddle;
         }
     }
 }
