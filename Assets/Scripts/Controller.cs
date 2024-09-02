@@ -27,15 +27,15 @@ namespace Breakout
         bool isGameStart = false;
 
         void Start() {
+            // Subscribe to the events
             Brick.OnBrickDestroyed += HandleBrickDestroyed;
             Ball.OnBallLost += HandleGameOver;
-            // Start the game timer when the game starts
-            gameTimer.OnTimerEnd += HandleGameOver;  // Subscribe to the timer end event
+            gameTimer.OnTimerEnd += HandleGameOver;  
             InitBricks();
         }
 
-         public void  Update(){
-                    
+         public void  Update()
+         {
             // Launching the ball 
             if (!isGameStart) {
                 if (Input.anyKeyDown){
@@ -59,13 +59,13 @@ namespace Breakout
 
         private void InitBricks()
         {
-                // Find all blocks, and count non-destructible blocks.
-                bricks =  BrickContainer.GetComponentsInChildren<Brick>();
-                foreach (Brick brick in bricks) {
-                    if (brick.IsDestructible()) {
-                        destructibleBricksCount++;
-                    }
+            // Find all blocks, and count non-destructible blocks.
+            bricks =  BrickContainer.GetComponentsInChildren<Brick>();
+            foreach (Brick brick in bricks) {
+                if (brick.IsDestructible()) {
+                    destructibleBricksCount++;
                 }
+            }
         } 
         private void HandleBrickDestroyed(int blockScore){
             
@@ -76,7 +76,6 @@ namespace Breakout
             if (destructibleBricksCount <= 0){
                 Win.SetActive(true);
                 OnResetLevel();
-      
             }
         }
 
@@ -88,7 +87,7 @@ namespace Breakout
 
         private void RestController()
         {
-              Win.SetActive(false);
+            Win.SetActive(false);
             GameOver.SetActive(false);
         }
 

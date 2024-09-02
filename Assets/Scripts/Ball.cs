@@ -5,11 +5,9 @@ namespace Breakout
 {
     public class Ball : MonoBehaviour
     {
-        private static readonly Vector3 BallOffestFromPaddle = new Vector3(0, 0.4f,0);
-        
+        private static readonly Vector3 BallOffestFromPaddle = new Vector3(0, 0.5f,0);
         [SerializeField] private Vector2 initialImpulse;
-        [SerializeField] private Rigidbody2D rigidbody2D;
-        
+        [SerializeField] private Rigidbody2D rigidbody2D; 
         private GameObject paddle;
         private Vector3 initialPos;
 
@@ -66,7 +64,6 @@ namespace Breakout
 
          public void ResetBall()
         {
-       
             rigidbody2D.velocity = Vector2.zero;
             rigidbody2D.angularVelocity = 0f;
             rigidbody2D.Sleep();

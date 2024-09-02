@@ -47,8 +47,6 @@ namespace Breakout
            hitsToDestroy = initialHitsToDestroy;
            Animator.Play("Idle");
            Animator.ResetTrigger("BallHit");
-           
-
         }
     }
 }
