@@ -8,6 +8,7 @@ namespace Breakout
         [SerializeField] private BoxCollider2D boxCollider2D;
        
         private float screenBoundary;
+        private Vector3 initialPos;
 
         public void Start()
         {
@@ -15,6 +16,7 @@ namespace Breakout
             // Calculate screen boundary based on the camera's orthographic size and aspect ratio
             float PaddleWidth = transform.localScale.x*2;
             screenBoundary = Camera.main.aspect * Camera.main.orthographicSize - PaddleWidth;
+            initialPos = transform.position;
         }
 
         public  void Update()
@@ -36,7 +38,7 @@ namespace Breakout
 
         }
 
-    private void HandleTouchInput()
+         private void HandleTouchInput()
         {
             if (Input.touchCount > 0)
             {
@@ -48,6 +50,11 @@ namespace Breakout
                 position.x = Mathf.Clamp(touchPosition.x, -screenBoundary, screenBoundary);
                 transform.position = position;
             }
+        }
+
+        public void RestPaddle()
+        {
+            transform.position = initialPos;
         }
     }
 }

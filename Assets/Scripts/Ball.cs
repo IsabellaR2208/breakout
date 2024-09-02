@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 namespace Breakout
 {
@@ -10,39 +11,27 @@ namespace Breakout
         [SerializeField] private Rigidbody2D rigidbody2D;
         
         private GameObject paddle;
-        private bool isBallInPlay = false;
+        private Vector3 initialPos;
+
+        public static event Action OnBallLost;
 
         public void Start(){
-
-                paddle = GameObject.FindWithTag("Paddle");
-                string message = (paddle != null) ? "Paddle found!" : "No GameObject with the tag 'Paddle' found.";
-                Debug.Log(message);
+            paddle = GameObject.FindWithTag("Paddle");
+            initialPos = paddle.transform.position;
         }
         
-         public void  Update(){
-            // Launching the ball 
-            if (!isBallInPlay) {
-                // Stick the ball to the paddle.
-                transform.position = paddle.transform.position + BallOffestFromPaddle;
-                // Lanuch the ball on fire.
-                if (Input.GetButtonDown("Fire1")){
-                    isBallInPlay = true;
-                    rigidbody2D.AddForce(initialImpulse, ForceMode2D.Impulse);
-                }
-            }    
+         public void  ShootBall(){
+            // Stick the ball to the paddle.
+            transform.position = paddle.transform.position + BallOffestFromPaddle;
+            rigidbody2D.AddForce(initialImpulse, ForceMode2D.Impulse);
+            
         }
         public void OnCollisionEnter2D(Collision2D collision)
         {
-            if (collision.gameObject.CompareTag("Brick"))
+            if (collision.gameObject.CompareTag("BottomBoundary"))
             {
-                Destroy(collision.gameObject);
-                //TODO Isabella 
-                //GameController.Instance.OnBrickDestroyed();
-            }
-            else if (collision.gameObject.CompareTag("Boundary"))
-            {
-                //TODO ISabella
-                 // GameController.Instance.OnBallLost();
+                OnHittingBottomBoundary();
+          
             }
             // Special case hitting the player's paddle.
             else if (collision.gameObject.CompareTag("Paddle")) {
@@ -50,6 +39,11 @@ namespace Breakout
             }
         }
 
+        private void OnHittingBottomBoundary()
+        {
+            OnBallLost?.Invoke();
+            gameObject.SetActive(false);
+        }
         private void OnHittingPaddle(Collision2D collision)
         {
             // Get the difference in x to see if we hit on the left or right.
@@ -67,6 +61,12 @@ namespace Breakout
             // Set the new ball velocity.
             rigidbody2D.velocity = direction * currentSpeed;
         }
- 
+
+
+         public void RestBall()
+        {
+             transform.position = initialPos;
+             gameObject.SetActive(true);
+        }
     }
 }
